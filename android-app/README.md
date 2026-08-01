@@ -30,7 +30,7 @@ I used the MVVM (Model-View-ViewModel) pattern, which is the standard approach f
                         ├── Simulation loop (coroutine, updates data every second)
                         └── DashboardApi (Retrofit, posts data to the Python backend)
 
-The whole UI reads from one `DashboardUiState` object. The ViewModel owns this state and is the only place where it is changed. The composables are just render functions — they display whatever the state currently holds and never manage data themselves. This makes the data flow easy to follow and avoids bugs where the UI and the logic get out of sync.
+The whole UI reads from one `DashboardUiState` object. The ViewModel owns this state and is the only place where it is changed. The composables are just render functions, they display whatever the state currently holds and never manage data themselves. This makes the data flow easy to follow and avoids bugs where the UI and the logic get out of sync.
 
 ## Why I made these choices
 
