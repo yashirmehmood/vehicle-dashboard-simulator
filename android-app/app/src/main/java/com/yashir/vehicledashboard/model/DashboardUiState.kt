@@ -3,7 +3,7 @@ package com.yashir.vehicledashboard.model
 data class DashboardUiState(
     val speedKmh: Int = 0,
     val batteryPercent: Int = 100,
-    val outsideTempCelsius: Int = 30,
+    val outsideTempCelsius: Int = 22,
     val drivingStatus: String = "Parked",
 
     // Media
