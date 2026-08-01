@@ -3,6 +3,8 @@ package com.yashir.vehicledashboard.ui.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yashir.vehicledashboard.model.DashboardUiState
+import com.yashir.vehicledashboard.network.DashboardApi
+import com.yashir.vehicledashboard.network.DashboardRequest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +35,7 @@ class DashboardViewModel : ViewModel() {
     private var mediaProgress = 0f
     private var statusIndex = 1
     private var statusTickCounter = 0
+    private var postTickCounter = 0
 
     init {
         startSimulation()
@@ -97,6 +100,13 @@ class DashboardViewModel : ViewModel() {
                     navRemainingTimeMin = remainingTime,
                     navRemainingDistanceKm = remainingDist
                 )
+
+                postTickCounter++
+                if (postTickCounter >= 5) {
+                    postTickCounter = 0
+                    postDataToBackend(_uiState.value)
+                }
+
             }
         }
     }
@@ -125,5 +135,25 @@ class DashboardViewModel : ViewModel() {
             trackArtist = tracks[currentTrackIndex].second,
             mediaProgressPercent = 0f
         )
+    }
+
+    private fun postDataToBackend(state: DashboardUiState) {
+        viewModelScope.launch {
+            try {
+                DashboardApi.service.updateDashboard(
+                    DashboardRequest(
+                        is_playing = state.isPlaying,
+                        track_name = state.trackName,
+                        track_artist = state.trackArtist,
+                        outside_temp_celsius = state.outsideTempCelsius,
+                        driving_status = state.drivingStatus,
+                        nav_destination = state.navDestination,
+                        nav_remaining_time_min = state.navRemainingTimeMin,
+                        nav_remaining_distance_km = state.navRemainingDistanceKm
+                    )
+                )
+            } catch (e: Exception) {
+            }
+        }
     }
 }
